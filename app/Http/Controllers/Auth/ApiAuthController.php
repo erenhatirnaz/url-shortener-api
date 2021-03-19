@@ -36,12 +36,37 @@ class ApiAuthController extends Controller
         return response(['accessToken' => $token], Response::HTTP_OK);
     }
 
-    public function login()
+    public function login(Request $request)
     {
-        return response([
-            "message" => "Not implemented!",
-            "code" => Response::HTTP_NOT_IMPLEMENTED,
-        ], Response::HTTP_NOT_IMPLEMENTED);
+        $validator = Validator::make($request->all(), [
+            'email' => "required|string|email",
+            'password' => "required|string|min:6"
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'errors' => $validator->errors()->all(),
+                'code' => Response::HTTP_UNPROCESSABLE_ENTITY,
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $user = User::firstWhere('email', $request->input('email'));
+        if (! $user) {
+            return response([
+                'message' => "User not found!",
+                'code' => Response::HTTP_NOT_FOUND,
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if (! Hash::check($request->input('password'), $user->password)) {
+            return response([
+                'message' => "Password mismatch!",
+                'code' => Response::HTTP_UNAUTHORIZED,
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $token = $user->createToken('Laravel Personal Access Client')->accessToken;
+
+        return response(['accessToken' => $token], Response::HTTP_OK);
     }
 
     public function show(Request $request)

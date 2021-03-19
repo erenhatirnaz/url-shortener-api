@@ -25,9 +25,12 @@ class ApiAuthControllerTest extends TestCase
         ]);
     }
 
-    public function testRegisterReturnErrorMessageIfGivenDataIsNotValid()
+    public function testRegisterAndLoginReturnErrorMessagesIfRequestIsNotValid()
     {
-        $this->json('post', 'api/register', ['email' => "", 'password' => ""])
+        $resources = ['api/register', 'api/login'];
+
+        foreach ($resources as $resource) {
+            $this->json('post', $resource, ['email' => "", 'password' => ""])
              ->assertExactJson([
                  "errors" => [
                     "The email field is required.",
@@ -37,39 +40,68 @@ class ApiAuthControllerTest extends TestCase
              ])
              ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('post', 'api/register', ['email' => "foobar"])
-             ->assertExactJson([
-                 "errors" => [
-                    "The email must be a valid email address.",
-                    "The password field is required."
-                 ],
-                 "code" => 422
-             ])
-             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+            $this->json('post', $resource, ['email' => "foobar"])
+                ->assertExactJson([
+                    "errors" => [
+                        "The email must be a valid email address.",
+                        "The password field is required."
+                    ],
+                    "code" => 422
+                ])
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('post', 'api/register', ['email' => "foo@bar.com"])
-             ->assertExactJson([
-                 "errors" => [
-                    "The password field is required."
-                 ],
-                 "code" => 422
-             ])
-             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+            $this->json('post', $resource, ['email' => "foo@bar.com"])
+                ->assertExactJson([
+                    "errors" => [
+                        "The password field is required."
+                    ],
+                    "code" => 422
+                ])
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('post', 'api/register', ['email' => "foo@bar.com", "password" => "abc"])
-             ->assertExactJson([
-                 "errors" => [
-                    "The password must be at least 6 characters."
-                 ],
-                 "code" => 422
-             ])
-             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+            $this->json('post', $resource, ['email' => "foo@bar.com", "password" => "abc"])
+                ->assertExactJson([
+                    "errors" => [
+                        "The password must be at least 6 characters."
+                    ],
+                    "code" => 422
+                ])
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
+    public function testLoginReturnPersonalAccessTokenIfTheGivenCredentialsIsTrue()
+    {
+        $user = User::factory()->create();
+        $credentials = [
+            'email' => $user->email,
+            'password' => "password"
+        ];
+
+        $response = $this->json('post', 'api/login', $credentials);
+
+        $response->assertJsonStructure(['accessToken'])
+                 ->assertStatus(Response::HTTP_OK);
+    }
+
+    public function testLoginReturnUserNotFoundErrorIfTheGivenEmailDoesntExist()
+    {
+        $this->json('post', 'api/login', ["email" => "bar@baz.com", "password" => "password123"])
+             ->assertExactJson(['message' => "User not found!", 'code' => Response::HTTP_NOT_FOUND])
+             ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testLoginReturnPasswordMismatchErrorIfTheGivenPasswordIsntCorrect()
+    {
+        $user = User::factory()->create(['email' => "foo@bar.com"]);
+
+        $this->json('post', 'api/login', ["email" => "foo@bar.com", "password" => "123456"])
+             ->assertExactJson(['message' => "Password mismatch!", 'code' => Response::HTTP_UNAUTHORIZED])
+             ->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
     public function testUserReturnAuthenticatedUserInformation()
     {
         $user = User::factory()->create();
-        $user->createToken('Laravel Personal Access Client');
         $this->actingAs($user, 'api');
 
         $this->json('get', 'api/user')

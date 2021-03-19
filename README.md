@@ -5,7 +5,7 @@ Users can login/register and create shortcuts for the url. There's no user
 interface, it's just RESTful API. API provides Personal Access Tokens to users.
 
 ## Resources
-### TODO [POST] `/api/register`
+### [POST] `/api/register`
 * ***Authentication Required:*** No.
 * **Required fields:** `email` and `password`.
 
@@ -13,15 +13,13 @@ Accepts `email` and `password` and creates a new user with given information If
 the given email address isn't in the database. Finally, creates and returns a
 Personal Access Token belonging to the user.
 
-### TODO [POST] `/api/login`
+### [POST] `/api/login`
 * ***Authentication Required:*** No.
 * **Required fields:** `email` and `password`.
 
-Accepts `email` and `password`. Checks whether the given credentials correct or
-not. If true and the Personal Access Token is present, returns the current token
-or the If the Personal Access Token isn't exists, creates and returns a new
-Personal Access Token belonging to the user. If the given credentials are not
-correct, returns an error message.
+Accepts `email` and `password`. If the given credentials are true, creates and
+returns a new Personal Access Token belonging to the user. If the given
+credentials are not correct, returns an error message.
 
 ### TODO [POST] `/api/logout`
 * **Authentication Required:** Yes.
