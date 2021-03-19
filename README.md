@@ -13,6 +13,21 @@ Accepts `email` and `password` and creates a new user with given information If
 the given email address isn't in the database. Finally, creates and returns a
 Personal Access Token belonging to the user.
 
+**Example request (curl):**
+```console
+curl --request POST \
+  --url http://localhost:8000/api/register \
+  --header 'Content-Type: application/json' \
+  --data '{"email": "foo@bar.com", "password": "password123"}'
+```
+
+*Response:*
+```json
+{
+  "accessToken": "..."
+}
+```
+
 ### [POST] `/api/login`
 * ***Authentication Required:*** No.
 * **Required fields:** `email` and `password`.
@@ -20,6 +35,44 @@ Personal Access Token belonging to the user.
 Accepts `email` and `password`. If the given credentials are true, creates and
 returns a new Personal Access Token belonging to the user. If the given
 credentials are not correct, returns an error message.
+
+**Example request (curl):**
+```console
+curl --request POST \
+  --url http://localhost:8000/api/login \
+  --header 'Content-Type: application/json' \
+  --data '{"email": "foo@bar.com", "password": "password123"}'
+```
+
+*Response:*
+```json
+{
+  "accessToken": "..."
+}
+```
+
+### [GET] `api/user`
+* **Authentication Required:** Yes.
+
+Returns the authenticated user's information (except `password` and `remember_token`).
+
+**Example request (curl):**
+```console
+curl --request GET \
+  --url http://localhost:8000/api/user \
+  --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]'
+```
+
+*Response*:
+```json
+{
+  "id": 1,
+  "email": "foo@bar.com",
+  "email_verified_at": null,
+  "created_at": "2021-03-19T13:50:45.000000Z",
+  "updated_at": "2021-03-19T13:50:45.000000Z"
+}
+```
 
 ### TODO [POST] `/api/logout`
 * **Authentication Required:** Yes.
