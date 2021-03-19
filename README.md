@@ -1,62 +1,76 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# URL Shortener API
+> A basic level URL Shortener API written in PHP/Laravel
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Users can login/register and create shortcuts for the url. There's no user
+interface, it's just RESTful API. API provides Personal Access Tokens to users.
 
-## About Laravel
+## Resources
+### TODO [POST] `/api/register`
+* ***Authentication Required:*** No.
+* **Required fields:** `email` and `password`.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Accepts `email` and `password` and creates a new user with given information If
+the given email address isn't in the database. Finally, creates and returns a
+Personal Access Token belonging to the user.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### TODO [POST] `/api/login`
+* ***Authentication Required:*** No.
+* **Required fields:** `email` and `password`.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Accepts `email` and `password`. Checks whether the given credentials correct or
+not. If true and the Personal Access Token is present, returns the current token
+or the If the Personal Access Token isn't exists, creates and returns a new
+Personal Access Token belonging to the user. If the given credentials are not
+correct, returns an error message.
 
-## Learning Laravel
+### TODO [POST] `/api/logout`
+* **Authentication Required:** Yes.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Deletes the current Personal Access Token from the database of the authenticated
+user.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### TODO [GET] `/api/shortcuts`
+* **Authentication Required:** Yes.
 
-## Laravel Sponsors
+Returns a list of Shortcut resource representations created by authenticated
+user. The list includes paging information.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### TODO [POST] `/api/shortcuts`
+* **Authentication Required:** Yes.
+* **Required field:** `url`
+* ***Optional field:*** `shortcut`. If it's not given, a random 5-character
+  string will be generated. **It's not case-sensitive**.
 
-### Premium Partners
+Accepts `url` and optional `shortcut` and creates a Shortcut resourse. Returns
+the information of the created Shortcut. Some keywords have been blocked for
+security reasons not to be used as shortcuts.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+**Blocked keywords**
+```txt
+api
+login
+register
+forgot
+forgot-password
+about
+admin
+index
+homepage
+```
+### TODO [GET] `/api/shortcuts/{shortcut}`
+* **Authentication Required:** Yes.
+* **Required fields:** `shortcut`
 
-## Contributing
+Returns the informations of the Shortcut resource by the `shortcut`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### TODO [PUT] `/api/shortcuts/{shortcut}`
+* **Authentication Required:** Yes.
+* **Required fields:** `shortcut`, `url`
 
-## Code of Conduct
+Accepts `shortcut` and `url` and updates the `url` of the `shortcut`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### TODO [DELETE] `/api/shortcuts/{shortcut}`
+* **Authentication Required:** Yes.
+* **Required fields:** `shortcut`
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Deletes Shortcut resource by the given `shortcut`.
