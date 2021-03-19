@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\ApiAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('json.response')->group(function () {
+    Route::post('/register', [ApiAuthController::class, 'register'])->name('register.api');
+    Route::post('/login', [ApiAuthController::class, 'login'])->name('login.api');
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', [ApiAuthController::class, 'show'])->name('user');
 });
