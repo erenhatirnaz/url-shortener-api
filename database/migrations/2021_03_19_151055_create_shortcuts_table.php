@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSchortcutsTable extends Migration
+class CreateShortcutsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSchortcutsTable extends Migration
      */
     public function up()
     {
-        Schema::create('schortcuts', function (Blueprint $table) {
+        Schema::create('shortcuts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('shortcut');
@@ -31,6 +31,6 @@ class CreateSchortcutsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schortcuts');
+        Schema::dropIfExists('shortcuts');
     }
 }
