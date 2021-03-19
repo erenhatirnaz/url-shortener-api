@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApiShortcutController;
 use App\Http\Controllers\Auth\ApiAuthController;
 
 /*
@@ -22,4 +23,6 @@ Route::middleware('json.response')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', [ApiAuthController::class, 'show'])->name('user');
+
+    Route::resource('/shortcuts', ApiShortcutController::class);
 });

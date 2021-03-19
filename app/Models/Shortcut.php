@@ -15,6 +15,10 @@ class Shortcut extends Model
         'url',
     ];
 
+    protected $hidden = [
+        'user_id',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
