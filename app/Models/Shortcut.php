@@ -16,7 +16,7 @@ class Shortcut extends Model
     ];
 
     protected $hidden = [
-        'user_id',
+        'user_id', 'user'
     ];
 
     public function user()

@@ -140,28 +140,37 @@ curl --request GET \
 }
 ```
 
-### TODO [POST] `/api/shortcuts`
+### [POST] `/api/shortcuts`
 * **Authentication Required:** Yes.
 * **Required field:** `url`
 * ***Optional field:*** `shortcut`. If it's not given, a random 5-character
   string will be generated. **It's not case-sensitive**.
 
 Accepts `url` and optional `shortcut` and creates a Shortcut resourse. Returns
-the information of the created Shortcut. Some keywords have been blocked for
-security reasons not to be used as shortcuts.
+the information of the created Shortcut. Some keywords have been reserved for
+security reasons not to be used as shortcuts. You can customize reserved
+keywords in the `config/shortcuts.php` file.
 
-**Blocked keywords**
-```txt
-api
-login
-register
-forgot
-forgot-password
-about
-admin
-index
-homepage
+**Example requrest (curl):**
+```console
+curl --request POST \
+  --url http://localhost:8000/api/shortcuts \
+  --header 'Authorization: [INSERT_ACCESS_TOKEN_HERE]' \
+  --header 'Content-Type: application/json' \
+  --data '{"url": "http://duckduckgo.com", "shortcut": "ddg"}'
 ```
+
+*Response:*
+```json
+{
+  "shortcut": "ddg",
+  "url": "http:\/\/duckduckgo.com",
+  "updated_at": "2021-03-20T21:37:03.000000Z",
+  "created_at": "2021-03-20T21:37:03.000000Z",
+  "id": 21
+}
+```
+
 ### TODO [GET] `/api/shortcuts/{shortcut}`
 * **Authentication Required:** Yes.
 * **Required fields:** `shortcut`

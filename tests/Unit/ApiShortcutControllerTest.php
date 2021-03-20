@@ -34,4 +34,48 @@ class ApiShortcutControllerTest extends TestCase
                         "per_page", "to", "total"],
         ])->assertStatus(Response::HTTP_OK);
     }
+
+    public function testStoreShouldCreateShortcutSuccessfully()
+    {
+        $shortcut = [
+            'url' => "https://duckduckgo.com",
+            'shortcut' => "ddg",
+        ];
+
+        $response = $this->json('post', 'api/shortcuts', $shortcut);
+
+        $response->assertJsonFragment($shortcut)
+                 ->assertJsonStructure(['id', 'shortcut', 'url', 'created_at', 'updated_at'])
+                 ->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function testStoreShouldGenerateRandomShortcutIfItsNotGiven()
+    {
+        $shortcut = ['url' => "https://duckduckgo.com"];
+
+        $response = $this->json('post', 'api/shortcuts', $shortcut);
+
+        $response->assertJsonFragment($shortcut)
+                 ->assertJsonStructure(['id', 'shortcut', 'url', 'created_at', 'updated_at'])
+                 ->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function testStoreShouldReturnErrorIfTheGivenRequestDataIsNotValid()
+    {
+        $this->json('post', 'api/shortcuts', ["url" => ""])
+             ->assertExactJson([
+                 'message' => "The given data was invalid.",
+                 'errors' => ["url" => ["The url field is required."]],
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->json('post', 'api/shortcuts', ["url" => "https://duckduckgo.com", 'shortcut' => ""])
+             ->assertExactJson([
+                 'message' => "The given data was invalid.",
+                 'errors'  => ["shortcut" => ["The shortcut must be a string.", "The shortcut must only contain letters and numbers."]]
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->json('post', 'api/shortcuts', ["url" => "https://duckduckgo.com", 'shortcut' => "admin"])
+             ->assertExactJson([
+                 'message' => "The given data was invalid.",
+                 'errors'  => ["shortcut" => ["The selected shortcut is invalid."]]
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 }

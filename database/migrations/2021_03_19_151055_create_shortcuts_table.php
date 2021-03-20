@@ -16,7 +16,7 @@ class CreateShortcutsTable extends Migration
         Schema::create('shortcuts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('shortcut');
+            $table->string('shortcut')->unique();
             $table->string('url');
             $table->timestamps();
 

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shortcut;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Resources\ShortcutCollection;
+use App\Http\Requests\StoreShortcutRequest;
 
 class ApiShortcutController extends Controller
 {
@@ -21,15 +24,20 @@ class ApiShortcutController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\StoreShortcutRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreShortcutRequest $request)
     {
-        return response([
-            'message' => "Not implemented!",
-            'code' => Response::HTTP_NOT_IMPLEMENTED
-        ], Response::HTTP_NOT_IMPLEMENTED);
+        $validated = $request->validated();
+
+        $shortcut = new Shortcut();
+        $shortcut->user()->associate($request->user());
+        $shortcut->shortcut = ($validated["shortcut"]) ?? Str::substr(sha1(time()), 6, 6);
+        $shortcut->url = $validated["url"];
+        $shortcut->save();
+
+        return response($shortcut, Response::HTTP_CREATED);
     }
 
     /**
