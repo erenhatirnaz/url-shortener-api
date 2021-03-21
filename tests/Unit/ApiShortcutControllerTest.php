@@ -78,4 +78,21 @@ class ApiShortcutControllerTest extends TestCase
                  'errors'  => ["shortcut" => ["The selected shortcut is invalid."]]
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
+    public function testShowShoulReturnShortcutInformation()
+    {
+        $shortcut = Shortcut::factory()->create();
+
+        $response = $this->json('get', "api/shortcuts/" . $shortcut->shortcut);
+
+        $response->assertExactJson($shortcut->toArray())
+                 ->assertStatus(Response::HTTP_OK);
+    }
+
+    public function testShowShouldReturnNotFoundErrorIfGivenShortcutDoesntExist()
+    {
+        $this->json('get', "api/shortcuts/foobar")
+             ->assertExactJson(['message' => "The resource has not been found!", 'code' => Response::HTTP_NOT_FOUND])
+             ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
 }

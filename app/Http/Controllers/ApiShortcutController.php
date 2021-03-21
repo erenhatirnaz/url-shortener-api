@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\ShortcutCollection;
 use App\Http\Requests\StoreShortcutRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ApiShortcutController extends Controller
 {
@@ -46,12 +47,15 @@ class ApiShortcutController extends Controller
      * @param  \App\Models\Shortcut  $shortcut
      * @return \Illuminate\Http\Response
      */
-    public function show(Shortcut $shortcut)
+    public function show(Request $request, $shortcut)
     {
-        return response([
-            'message' => "Not implemented!",
-            'code' => Response::HTTP_NOT_IMPLEMENTED
-        ], Response::HTTP_NOT_IMPLEMENTED);
+        try {
+            $shortcut = Shortcut::where('shortcut', $shortcut)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            return $this->respondNotFound();
+        }
+
+        return $shortcut;
     }
 
     /**
@@ -81,5 +85,13 @@ class ApiShortcutController extends Controller
             'message' => "Not implemented!",
             'code' => Response::HTTP_NOT_IMPLEMENTED
         ], Response::HTTP_NOT_IMPLEMENTED);
+    }
+
+    private function respondNotFound()
+    {
+        return response([
+            'message' => "The resource has not been found!",
+            'code' => Response::HTTP_NOT_FOUND,
+        ], Response::HTTP_NOT_FOUND);
     }
 }

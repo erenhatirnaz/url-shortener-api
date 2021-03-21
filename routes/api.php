@@ -24,5 +24,5 @@ Route::middleware('json.response')->group(function () {
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', [ApiAuthController::class, 'show'])->name('user');
 
-    Route::resource('/shortcuts', ApiShortcutController::class);
+    Route::apiResource('/shortcuts', ApiShortcutController::class);
 });
