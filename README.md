@@ -4,6 +4,43 @@
 Users can login/register and create shortcuts for the url. There's no user
 interface, it's just RESTful API. API provides Personal Access Tokens to users.
 
+## Usage
+### Requirements
+* PHP 7.3 or higher
+* Composer
+
+### Install dependencies
+To install PHP dependencies:
+```console
+composer install
+```
+
+### Configuration
+First of all, rename `.env.example` file to `.env` and fill the variables and
+edit the file according to you.
+
+Next, re-generate the application key:
+```console
+php artisan key:generate
+```
+
+Next, migrate the database:
+```console
+php artisan migrate
+```
+
+Next, insert a client to generate personal access token:
+```console
+php artisan passport:client --personal
+```
+
+### Starting up server
+To serve the application:
+```console
+php artisan serve
+```
+and now the application runs on **localhost:8000**.
+
 ## Resources
 ### [POST] `/api/register`
 * ***Authentication Required:*** No.
