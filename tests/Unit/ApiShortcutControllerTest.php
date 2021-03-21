@@ -119,4 +119,27 @@ class ApiShortcutControllerTest extends TestCase
             'code' => Response::HTTP_FORBIDDEN,
         ])->assertStatus(Response::HTTP_FORBIDDEN);
     }
+
+    public function testDestoryShouldRemoveTheGivenShortcut()
+    {
+        $shortcut = Shortcut::factory()->create(['user_id' => $this->user->id]);
+
+        $response = $this->json('delete', "api/shortcuts/" . $shortcut->shortcut);
+
+        $response->assertExactJson(['deleted' => true, 'shortcut' => $shortcut->shortcut])
+                 ->assertStatus(Response::HTTP_OK);
+        $this->assertDeleted($shortcut);
+    }
+
+    public function testDestoryShouldReturnActionUnauthorizedErrorIfTheGivenShortcutDoesntBelongToTheUser()
+    {
+        $shortcut = Shortcut::factory()->create();
+
+        $response = $this->json('delete', "api/shortcuts/" . $shortcut->shortcut);
+
+        $response->assertExactJson([
+            'message' => "This action is unauthorized! This shortcut does not belong to you.",
+            'code' => Response::HTTP_FORBIDDEN,
+        ])->assertStatus(Response::HTTP_FORBIDDEN);
+    }
 }

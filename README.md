@@ -221,8 +221,23 @@ curl --request PUT \
 }
 ```
 
-### TODO [DELETE] `/api/shortcuts/{shortcut}`
+### [DELETE] `/api/shortcuts/{shortcut}`
 * **Authentication Required:** Yes.
 * **Required fields:** `shortcut`
 
 Deletes Shortcut resource by the given `shortcut`.
+
+**Example request(curl):**
+```console
+curl --request DELETE \
+  --url http://localhost:8000/api/shortcuts/ddg \
+  --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]'
+```
+
+*Response:*
+```json
+{
+  "deleted": true,
+  "shortcut": "ddg"
+}
+```

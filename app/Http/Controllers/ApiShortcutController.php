@@ -47,7 +47,7 @@ class ApiShortcutController extends Controller
      * @param  string $shortcut
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $shortcut)
+    public function show($shortcut)
     {
         try {
             $shortcut = Shortcut::where('shortcut', $shortcut)->firstOrFail();
@@ -61,7 +61,7 @@ class ApiShortcutController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\StoreShortcutRequest $request
      * @param  string $shortcut
      * @return \Illuminate\Http\Response
      */
@@ -87,15 +87,25 @@ class ApiShortcutController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Shortcut  $shortcut
+     * @param  \Illuminate\Http\Request $request
+     * @param  string  $shortcut
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Shortcut $shortcut)
+    public function destroy(Request $request, $shortcut)
     {
-        return response([
-            'message' => "Not implemented!",
-            'code' => Response::HTTP_NOT_IMPLEMENTED
-        ], Response::HTTP_NOT_IMPLEMENTED);
+        try {
+            $shortcut = Shortcut::where('shortcut', $shortcut)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            return $this->respondNotFound();
+        }
+
+        if (! $request->user()->can('delete', $shortcut)) {
+            return $this->respondActionUnauthorized();
+        }
+
+        $shortcut->delete();
+
+        return ['deleted' => true, 'shortcut' => $shortcut->shortcut];
     }
 
     private function respondNotFound()
