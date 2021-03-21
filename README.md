@@ -12,7 +12,7 @@ interface, it's just RESTful API. API provides Personal Access Tokens to users.
 ### Install dependencies
 To install PHP dependencies:
 ```console
-composer install
+$ composer install
 ```
 
 ### Configuration
@@ -21,23 +21,23 @@ edit the file according to you.
 
 Next, re-generate the application key:
 ```console
-php artisan key:generate
+$ php artisan key:generate
 ```
 
 Next, migrate the database:
 ```console
-php artisan migrate
+$ php artisan migrate
 ```
 
 Next, insert a client to generate personal access token:
 ```console
-php artisan passport:client --personal
+$ php artisan passport:client --personal
 ```
 
 ### Starting up server
 To serve the application:
 ```console
-php artisan serve
+$ php artisan serve
 ```
 and now the application runs on **localhost:8000**.
 
@@ -52,7 +52,7 @@ Personal Access Token belonging to the user.
 
 **Example request (curl):**
 ```console
-curl --request POST \
+$ curl --request POST \
   --url http://localhost:8000/api/register \
   --header 'Content-Type: application/json' \
   --data '{"email": "foo@bar.com", "password": "password123"}'
@@ -75,7 +75,7 @@ credentials are not correct, returns an error message.
 
 **Example request (curl):**
 ```console
-curl --request POST \
+$ curl --request POST \
   --url http://localhost:8000/api/login \
   --header 'Content-Type: application/json' \
   --data '{"email": "foo@bar.com", "password": "password123"}'
@@ -95,7 +95,7 @@ Returns the authenticated user's information (except `password` and `remember_to
 
 **Example request (curl):**
 ```console
-curl --request GET \
+$ curl --request GET \
   --url http://localhost:8000/api/user \
   --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]'
 ```
@@ -119,7 +119,7 @@ user. The list includes paging information.
 
 **Example requrest (curl):**
 ```console
-curl --request GET \
+$ curl --request GET \
   --url http://localhost:8000/api/shortcuts \
   --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]'
 ```
@@ -190,7 +190,7 @@ keywords in the `config/shortcuts.php` file.
 
 **Example requrest (curl):**
 ```console
-curl --request POST \
+$ curl --request POST \
   --url http://localhost:8000/api/shortcuts \
   --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]' \
   --header 'Content-Type: application/json' \
@@ -216,7 +216,7 @@ Returns the informations of the Shortcut resource by the `shortcut`.
 
 **Example request (curl):**
 ```console
-curl --request GET \
+$ curl --request GET \
   --url http://localhost:8000/api/shortcuts/ddg \
   --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]'
 ```
@@ -241,7 +241,7 @@ the shortcut value is not allowed.**
 
 **Example request (curl):**
 ```console
-curl --request PUT \
+$ curl --request PUT \
   --url http://localhost:8000/api/shortcuts/ddg \
   --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]' \
   --data '{"url": "http://duckduckgo.com/deneme"}'
@@ -266,7 +266,7 @@ Deletes Shortcut resource by the given `shortcut`.
 
 **Example request(curl):**
 ```console
-curl --request DELETE \
+$ curl --request DELETE \
   --url http://localhost:8000/api/shortcuts/ddg \
   --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]'
 ```
@@ -278,3 +278,21 @@ curl --request DELETE \
   "shortcut": "ddg"
 }
 ```
+
+## License
+
+> url-shortener-api
+> Copyright (C) 2021  Eren Hatirnaz
+
+> This program is free software: you can redistribute it and/or modify
+> it under the terms of the GNU General Public License as published by
+> the Free Software Foundation, either version 3 of the License, or
+> (at your option) any later version.
+
+> This program is distributed in the hope that it will be useful,
+> but WITHOUT ANY WARRANTY; without even the implied warranty of
+> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> GNU General Public License for more details.
+
+> You should have received a copy of the GNU General Public License
+> along with this program.  If not, see <https://www.gnu.org/licenses/>
