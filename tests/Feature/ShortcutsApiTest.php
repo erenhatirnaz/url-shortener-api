@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Shortcut;
 use Illuminate\Http\Response;
 
-class ApiShortcutControllerTest extends TestCase
+class ShortcutsApiTest extends TestCase
 {
     protected $user;
 

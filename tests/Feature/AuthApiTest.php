@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
 
-class ApiAuthControllerTest extends TestCase
+class AuthApiTest extends TestCase
 {
     public function testRegisterReturnPersonalAccessToken()
     {
