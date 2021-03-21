@@ -95,4 +95,28 @@ class ApiShortcutControllerTest extends TestCase
              ->assertExactJson(['message' => "The resource has not been found!", 'code' => Response::HTTP_NOT_FOUND])
              ->assertStatus(Response::HTTP_NOT_FOUND);
     }
+
+    public function testUpdateShouldChangeTheUrlOfTheGivenShortcut()
+    {
+        $shortcut = Shortcut::factory()->create(['user_id' => $this->user->id]);
+        $fields = ['url' => "http://duckduckgo.com"];
+
+        $response = $this->json('put', "api/shortcuts/" . $shortcut->shortcut, $fields);
+
+        $response->assertJsonFragment($fields)
+                 ->assertStatus(Response::HTTP_OK);
+    }
+
+    public function testUpdateShouldReturnActionUnauthorizedErrorIfTheGivenShortcutDoesntBelongToTheUser()
+    {
+        $shortcut = Shortcut::factory()->create();
+        $fields = ['url' => "http://foobarbaz.com"];
+
+        $response = $this->json('put', "api/shortcuts/" . $shortcut->shortcut, $fields);
+
+        $response->assertExactJson([
+            'message' => "This action is unauthorized! This shortcut does not belong to you.",
+            'code' => Response::HTTP_FORBIDDEN,
+        ])->assertStatus(Response::HTTP_FORBIDDEN);
+    }
 }

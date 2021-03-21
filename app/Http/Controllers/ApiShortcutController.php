@@ -44,7 +44,7 @@ class ApiShortcutController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Shortcut  $shortcut
+     * @param  string $shortcut
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $shortcut)
@@ -62,15 +62,26 @@ class ApiShortcutController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Shortcut  $shortcut
+     * @param  string $shortcut
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Shortcut $shortcut)
+    public function update(StoreShortcutRequest $request, $shortcut)
     {
-        return response([
-            'message' => "Not implemented!",
-            'code' => Response::HTTP_NOT_IMPLEMENTED
-        ], Response::HTTP_NOT_IMPLEMENTED);
+        try {
+            $shortcut = Shortcut::where('shortcut', $shortcut)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            return $this->respondNotFound();
+        }
+
+        if (! $request->user()->can('update', $shortcut)) {
+            return $this->respondActionUnauthorized();
+        }
+
+        $validated = $request->validated();
+        $shortcut->url = $validated["url"];
+        $shortcut->save();
+
+        return $shortcut;
     }
 
     /**
@@ -93,5 +104,13 @@ class ApiShortcutController extends Controller
             'message' => "The resource has not been found!",
             'code' => Response::HTTP_NOT_FOUND,
         ], Response::HTTP_NOT_FOUND);
+    }
+
+    private function respondActionUnauthorized()
+    {
+        return response([
+            'message' => "This action is unauthorized! This shortcut does not belong to you.",
+            'code' => Response::HTTP_FORBIDDEN,
+        ], Response::HTTP_FORBIDDEN);
     }
 }

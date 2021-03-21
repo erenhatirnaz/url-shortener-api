@@ -155,7 +155,7 @@ keywords in the `config/shortcuts.php` file.
 ```console
 curl --request POST \
   --url http://localhost:8000/api/shortcuts \
-  --header 'Authorization: [INSERT_ACCESS_TOKEN_HERE]' \
+  --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]' \
   --header 'Content-Type: application/json' \
   --data '{"url": "http://duckduckgo.com", "shortcut": "ddg"}'
 ```
@@ -171,17 +171,55 @@ curl --request POST \
 }
 ```
 
-### TODO [GET] `/api/shortcuts/{shortcut}`
+### [GET] `/api/shortcuts/{shortcut}`
 * **Authentication Required:** Yes.
 * **Required fields:** `shortcut`
 
 Returns the informations of the Shortcut resource by the `shortcut`.
 
-### TODO [PUT] `/api/shortcuts/{shortcut}`
+**Example request (curl):**
+```console
+curl --request GET \
+  --url http://localhost:8000/api/shortcuts/ddg \
+  --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]'
+```
+
+*Response:*
+```json
+{
+  "id": 21,
+  "shortcut": "ddg",
+  "url": "http:\/\/duckduckgo.com",
+  "created_at": "2021-03-20T21:37:03.000000Z",
+  "updated_at": "2021-03-21T11:29:57.000000Z"
+}
+```
+
+### [PUT] `/api/shortcuts/{shortcut}`
 * **Authentication Required:** Yes.
 * **Required fields:** `shortcut`, `url`
 
-Accepts `shortcut` and `url` and updates the `url` of the `shortcut`.
+Accepts `shortcut` and `url` and updates the `url` of the `shortcut`. **Changing
+the shortcut value is not allowed.**
+
+**Example request (curl):**
+```console
+curl --request PUT \
+  --url http://localhost:8000/api/shortcuts/ddg \
+  --header 'Authorization: Bearer [INSERT_ACCESS_TOKEN_HERE]' \
+  --data '{"url": "http://duckduckgo.com/deneme"}'
+```
+
+*Response:*
+```json
+{
+  "id": 21,
+  "shortcut": "ddg",
+  "url": "http:\/\/duckduckgo.com\/deneme",
+  "created_at": "2021-03-20T21:37:03.000000Z",
+  "updated_at": "2021-03-21T11:30:31.000000Z"
+}
+```
 
 ### TODO [DELETE] `/api/shortcuts/{shortcut}`
 * **Authentication Required:** Yes.
